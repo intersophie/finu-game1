@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fin AI Feature Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1f8ceb 0%, #7b68ee 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 24px 48px rgba(31, 140, 235, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1f8ceb 0%, #2d5aa0 100%);
+            color: white;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .progress-section {
+            background: #f7f8fa;
+            padding: 24px 32px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .progress-info {
+            text-align: center;
+            color: #425a72;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e1e5e9;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06d6a0 0%, #1f8ceb 100%);
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        .game-area {
+            padding: 32px;
+        }
+
+        .pain-card {
+            background: linear-gradient(135deg, #fff4e6 0%, #ffeaa7 100%);
+            border: 2px solid #ffab00;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .pain-emoji {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .pain-text {
+            font-size: 1.4rem;
+            color: #2d3436;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .pain-subtitle {
+            color: #636e72;
+            font-size: 1rem;
+            font-style: italic;
+        }
+
+        .instruction-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #1f8ceb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .instruction-text {
+            font-size: 1.2rem;
+            color: #1565c0;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .selection-counter {
+            background: #1f8ceb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(31, 140, 235, 0.08);
+        }
+
+        .feature-card:hover {
+            border-color: #1f8ceb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(31, 140, 235, 0.15);
+        }
+
+        .feature-card.selected {
+            background: linear-gradient(135deg, #1f8ceb 0%, #7b68ee 100%);
+            border-color: #1f8ceb;
+            color: white;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(31, 140, 235, 0.25);
+        }
+
+        .feature-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .feature-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+
+        .selection-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #06d6a0;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(6, 214, 160, 0.3);
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .score-display {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1f8ceb 0%, #7b68ee 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(31, 140, 235, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(31, 140, 235, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #06d6a0 0%, #00b894 100%);
+            box-shadow: 0 4px 12px rgba(6, 214, 160, 0.2);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 20px rgba(6, 214, 160, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+            box-shadow: 0 4px 12px rgba(99, 110, 114, 0.2);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(99, 110, 114, 0.3);
+        }
+
+        .feedback {
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            font-size: 1.1rem;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #d1f2eb 0%, #a7f3d0 100%);
+            color: #065f46;
+            border: 2px solid #06d6a0;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 48px;
+            border-radius: 16px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            max-width: 480px;
+            border: 2px solid #1f8ceb;
+        }
+
+        .celebration h2 {
+            color: #1f8ceb;
+            margin-bottom: 16px;
+            font-size: 2rem;
+        }
+
+        .celebration p {
+            color: #425a72;
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(45, 52, 54, 0.8);
+            z-index: 999;
+            display: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0, -8px, 0);
+            }
+            70% {
+                transform: translate3d(0, -4px, 0);
+            }
+            90% {
+                transform: translate3d(0, -2px, 0);
+            }
+        }
+
+        .bounce {
+            animation: bounce 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎯 Fin AI Feature Challenge</h1>
+            <p>Match real customer pain points with the perfect Fin AI features</p>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-info" id="progress-info">Question 1 of 6</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="pain-card">
+                <span class="pain-emoji" id="pain-emoji">🤔</span>
+                <div class="pain-text" id="pain-text">
+                    Loading pain point...
+                </div>
+                <div class="pain-subtitle">Real customer scenario</div>
+            </div>
+
+            <div class="instruction-box">
+                <div class="instruction-text" id="instruction-text">
+                    Select the features that solve this pain point
+                </div>
+                <div class="selection-counter" id="selection-counter">
+                    0 of 1 features selected
+                </div>
+            </div>
+
+            <div class="features-grid" id="features-grid">
+                <!-- Features will be populated here -->
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="controls">
+                <div class="score-display">Score: <span id="score">0</span> points</div>
+                <button class="btn" id="submit-btn" onclick="checkAnswer()" disabled>
+                    Submit Answer
+                </button>
+                <button class="btn btn-secondary" id="next-btn" onclick="nextQuestion()" style="display: none;">
+                    Next Question
+                </button>
+                <button class="btn btn-secondary" onclick="showHint()">💡 Hint</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="celebration" id="celebration">
+        <h2 id="celebration-title">🎉 Challenge Complete!</h2>
+        <p id="celebration-text">You've mastered Fin AI feature mapping!</p>
+        <button class="btn btn-success" onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        // Game data - EXACTLY from your PDF table
+        const gameData = [
+            {
+                pain: "I have a complicated question I can't find an answer to, nothing feels quite right in the help center",
+                correctFeatures: ["Multi-source Generative Answers"],
+                emoji: "🤔"
+            },
+            {
+                pain: "I want to know if my order will arrive by next tuesday and if I order another one, could I get a discount?",
+                correctFeatures: ["Multi-source Generative Answers", "Data Connector"],
+                emoji: "📦"
+            },
+            {
+                pain: "I'm emotional and I don't want to talk to Fin",
+                correctFeatures: ["Fin Guidance on escalation", "Tone of Voice"],
+                emoji: "😠"
+            },
+            {
+                pain: "I am interested in a product and I'm lingering on the check-out page",
+                correctFeatures: ["Audience & content Targeting", "Outbound messaging"],
+                emoji: "🛒"
+            },
+            {
+                pain: "I need to make changes to my subscription, I just want to swap 2 of the products",
+                correctFeatures: ["Data Connector", "Fin Tasks", "Multi-source Generative Answers"],
+                emoji: "🔄"
+            },
+            {
+                pain: "I like to complain on instagram, because I'm a Diva",
+                correctFeatures: ["Omni-channel support"],
+                emoji: "📱"
+            }
+        ];
+
+        // EXACTLY 8 features from your PDF table - NO "Connectors"
+        const allFeatures = [
+            "Multi-source Generative Answers",
+            "Data Connector", 
+            "Fin Guidance on escalation",
+            "Tone of Voice",
+            "Audience & content Targeting",
+            "Outbound messaging",
+            "Fin Tasks",
+            "Omni-channel support"
+        ];
+
+        let currentQuestion = 0;
+        let selectedFeatures = [];
+        let score = 0;
+
+        function initializeGame() {
+            currentQuestion = 0;
+            score = 0;
+            loadQuestion();
+            populateFeatures();
+            updateProgress();
+        }
+
+        function loadQuestion() {
+            const question = gameData[currentQuestion];
+            
+            document.getElementById('pain-emoji').textContent = question.emoji;
+            document.getElementById('pain-text').textContent = `"${question.pain}"`;
+            
+            const requiredCount = question.correctFeatures.length;
+            document.getElementById('instruction-text').textContent = 
+                `Select ${requiredCount} feature${requiredCount > 1 ? 's' : ''} that solve${requiredCount === 1 ? 's' : ''} this pain point`;
+            
+            selectedFeatures = [];
+            updateSelectionCounter();
+            clearFeedback();
+        }
+
+        function populateFeatures() {
+            const grid = document.getElementById('features-grid');
+            grid.innerHTML = '';
+            
+            // Shuffle features for each question
+            const shuffledFeatures = [...allFeatures].sort(() => Math.random() - 0.5);
+            
+            shuffledFeatures.forEach((feature, index) => {
+                const card = document.createElement('div');
+                card.className = 'feature-card';
+                card.onclick = () => toggleFeature(feature, card);
+                card.innerHTML = `
+                    <div class="feature-name">${feature}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleFeature(featureName, cardElement) {
+            const question = gameData[currentQuestion];
+            const maxFeatures = question.correctFeatures.length;
+            
+            if (selectedFeatures.includes(featureName)) {
+                // Remove feature
+                selectedFeatures = selectedFeatures.filter(f => f !== featureName);
+                cardElement.classList.remove('selected');
+                const badge = cardElement.querySelector('.selection-badge');
+                if (badge) badge.remove();
+            } else if (selectedFeatures.length < maxFeatures) {
+                // Add feature
+                selectedFeatures.push(featureName);
+                cardElement.classList.add('selected');
+                
+                // Add selection badge
+                const badge = document.createElement('div');
+                badge.className = 'selection-badge';
+                badge.textContent = selectedFeatures.length;
+                cardElement.appendChild(badge);
+            }
+            
+            updateSelectionCounter();
+            updateSubmitButton();
+        }
+
+        function updateSelectionCounter() {
+            const question = gameData[currentQuestion];
+            const required = question.correctFeatures.length;
+            const selected = selectedFeatures.length;
+            
+            document.getElementById('selection-counter').textContent = 
+                `${selected} of ${required} features selected`;
+        }
+
+        function updateSubmitButton() {
+            const question = gameData[currentQuestion];
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = selectedFeatures.length !== question.correctFeatures.length;
+        }
+
+        function updateProgress() {
+            const progressPercent = (currentQuestion / gameData.length) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+            document.getElementById('progress-info').textContent = `Question ${currentQuestion + 1} of ${gameData.length}`;
+            document.getElementById('score').textContent = score;
+        }
+
+        function checkAnswer() {
+            const question = gameData[currentQuestion];
+            const correctFeatures = question.correctFeatures;
+            
+            const isCorrect = selectedFeatures.length === correctFeatures.length &&
+                            selectedFeatures.every(feature => correctFeatures.includes(feature));
+            
+            showFeedback(isCorrect, correctFeatures);
+            
+            if (isCorrect) {
+                score += 10;
+                document.getElementById('score').textContent = score;
+            }
+            
+            document.getElementById('submit-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+            
+            // Disable all feature cards
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.classList.add('disabled');
+            });
+        }
+
+        function showFeedback(isCorrect, correctFeatures) {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct bounce';
+                feedback.innerHTML = '🎉 Perfect! You identified exactly the right Fin AI features for this scenario.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `❌ Not quite right. The correct features are:<br><br><strong>${correctFeatures.join(' + ')}</strong>`;
+            }
+        }
+
+        function clearFeedback() {
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < gameData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                resetInterface();
+                updateProgress();
+            } else {
+                showGameComplete();
+            }
+        }
+
+        function resetInterface() {
+            document.getElementById('submit-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            // Re-enable and clear all feature cards
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.classList.remove('disabled', 'selected');
+                card.style.pointerEvents = 'auto';
+                const badge = card.querySelector('.selection-badge');
+                if (badge) badge.remove();
+            });
+        }
+
+        function showHint() {
+            const question = gameData[currentQuestion];
+            const hints = {
+                "I have a complicated question I can't find an answer to, nothing feels quite right in the help center": "Think about AI that can search and generate answers from multiple knowledge sources.",
+                "I want to know if my order will arrive by next tuesday and if I order another one, could I get a discount?": "This needs AI answers plus integration with order/pricing systems to check delivery and discounts.",
+                "I'm emotional and I don't want to talk to Fin": "Focus on human escalation capabilities and empathetic communication settings.",
+                "I am interested in a product and I'm lingering on the check-out page": "Think about detecting user behavior and sending proactive sales messages.",
+                "I need to make changes to my subscription, I just want to swap 2 of the products": "This requires data access, automated actions, and AI knowledge combined.",
+                "I like to complain on instagram, because I'm a Diva": "Consider support that works across all social media and messaging channels."
+            };
+            
+            const hint = hints[question.pain] || "Think about what type of Fin AI features would solve this specific customer need.";
+            alert(`💡 Hint:\n\n${hint}`);
+        }
+
+        function showGameComplete() {
+            const finalScore = score;
+            const maxScore = gameData.length * 10;
+            const percentage = Math.round((finalScore / maxScore) * 100);
+            
+            let message = `You scored ${finalScore} out of ${maxScore} points (${percentage}%)!\n\n`;
+            
+            if (percentage === 100) {
+                message += "🏆 Perfect score! You're a Fin AI expert!\n\n🍌🍌🍌 IF YOU'RE DONE FIRST, SHOUT BANANA TO CLAIM YOUR PRIZE! 🍌🍌🍌";
+            } else if (percentage >= 80) {
+                message += "🌟 Excellent! You really understand Fin AI features!";
+            } else if (percentage >= 60) {
+                message += "👍 Good job! You're learning the feature mapping well!";
+            } else {
+                message += "📚 Keep practicing! Try again to improve your understanding!";
+            }
+            
+            document.getElementById('celebration-title').textContent = '🎉 Challenge Complete!';
+            document.getElementById('celebration-text').textContent = message;
+            showCelebration();
+        }
+
+        function showCelebration() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('celebration').style.display = 'block';
+        }
+
+        function hideCelebration() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('celebration').style.display = 'none';
+        }
+
+        function restartGame() {
+            hideCelebration();
+            initializeGame();
+        }
+
+        // Initialize the game
+        window.addEventListener('load', initializeGame);
+    </script>
+</body>
+</html>
