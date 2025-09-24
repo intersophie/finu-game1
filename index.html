@@ -401,42 +401,23 @@
                 emoji: "🤔"
             },
             {
-                pain: "I want to know if my order will arrive by next tuesday and if I order another one, could I get a discount?",
-                correctFeatures: ["Multi-source Generative Answers", "Data Connector"],
-                emoji: "📦"
-            },
-            {
-                pain: "I'm emotional and I don't want to talk to Fin",
-                correctFeatures: ["Fin Guidance on escalation", "Tone of Voice"],
-                emoji: "😠"
-            },
-            {
                 pain: "I am interested in a product and I'm lingering on the check-out page",
                 correctFeatures: ["Audience & content Targeting", "Outbound messaging"],
                 emoji: "🛒"
             },
             {
                 pain: "I need to make changes to my subscription, I just want to swap 2 of the products",
-                correctFeatures: ["Data Connector", "Fin Tasks", "Multi-source Generative Answers"],
+                correctFeatures: ["Data Connector","Fin Tasks"],
                 emoji: "🔄"
             },
-            {
-                pain: "I like to complain on instagram, because I'm a Diva",
-                correctFeatures: ["Omni-channel support"],
-                emoji: "📱"
-            }
         ];
 
         // EXACTLY 8 features from your PDF table - NO "Connectors"
         const allFeatures = [
             "Multi-source Generative Answers",
             "Data Connector", 
-            "Fin Guidance on escalation",
-            "Tone of Voice",
-            "Audience & content Targeting",
             "Outbound messaging",
-            "Fin Tasks",
-            "Omni-channel support"
+            "Fin Tasks"
         ];
 
         let currentQuestion = 0;
