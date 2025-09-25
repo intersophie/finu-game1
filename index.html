@@ -600,10 +600,8 @@
             let message = `You scored ${finalScore} out of ${maxScore} points (${percentage}%)!\n\n`;
             
             if (percentage === 100) {
-                message += "🏆 Perfect score! You're a Fin AI expert!\n\n🍌🍌🍌 IF YOU'RE DONE FIRST, SHOUT BANANA! 🍌🍌🍌";
-            } else if (percentage >= 80) {
-                message += "🌟 Excellent! You really understand Fin AI features!";
-            } else if (percentage >= 60) {
+                message += "🏆 Perfect score! You're a Fin AI expert!\n\n";
+            } else if (percentage >= 70) {
                 message += "👍 Good job! You're learning the feature mapping well!";
             } else {
                 message += "📚 Keep practicing! Try again to improve your understanding!";
